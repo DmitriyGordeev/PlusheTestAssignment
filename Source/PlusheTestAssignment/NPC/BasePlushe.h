@@ -38,7 +38,7 @@ protected:
 	
 	virtual void ApplySettings();
 
-	UPROPERTY(EditDefaultsOnly, Category="Plushe settings")
+	UPROPERTY(EditAnywhere, Category="Plushe settings")
 	TSoftClassPtr<UPlusheSettings> PlusheSettingsAsset;
 
 	UPROPERTY()
