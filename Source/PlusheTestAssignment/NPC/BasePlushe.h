@@ -26,7 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSettingsLoaded();
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,7 +44,7 @@ protected:
 	UPROPERTY()
 	UPlusheSettings* Settings = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	EPlusheTypeD Type = EPlusheTypeD::Aggressive;
 
 	UPROPERTY(BlueprintReadWrite)

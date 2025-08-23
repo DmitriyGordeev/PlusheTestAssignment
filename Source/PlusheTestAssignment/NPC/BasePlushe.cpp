@@ -27,13 +27,38 @@ void ABasePlushe::LoadSettings()
 	if (!PlusheSettingsAsset)
 		return;
 	
-	UClass* AssetClass = PlusheSettingsAsset.Get();
-	if (!AssetClass)
+	// UClass* AssetClass = PlusheSettingsAsset.Get();
+	// if (!AssetClass)
+	// {
+	// 	AssetClass = PlusheSettingsAsset.LoadSynchronous();
+	// }
+	// UE_LOG(LogTemp, Log, TEXT("AssetClass = %s"), *AssetClass->GetName());
+	// Settings = NewObject<UPlusheSettings>(this, AssetClass);
+
+	FStreamableDelegate LoadDelegate;
+	LoadDelegate.BindLambda([this]()
 	{
-		AssetClass = PlusheSettingsAsset.LoadSynchronous();
-	}
-	UE_LOG(LogTemp, Log, TEXT("AssetClass = %s"), *AssetClass->GetName());
-	Settings = NewObject<UPlusheSettings>(this, AssetClass);
+		// This lambda executes once the asset is loaded
+		UClass* AssetClass = PlusheSettingsAsset.Get();
+		if (AssetClass)
+		{
+			UE_LOG(LogTemp, Log, TEXT("AssetClass = %s"), *AssetClass->GetName());
+			Settings = NewObject<UPlusheSettings>(this, AssetClass);
+			
+			Type = Settings->Type;
+			UE_LOG(LogTemp, Log, TEXT("Applied new Type = %i from settings"), Type);
+
+			PerceptionEnterRadius = Settings->PerceptionEnterRadius;
+			UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionEnterRadius = %f from settings"), PerceptionEnterRadius);
+			PerceptionLosingSight = Settings->PerceptionLosingSightRadius;
+			UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionLosingSight = %f from settings"), PerceptionLosingSight);
+
+			ApplySettings();
+			OnSettingsLoaded();
+		}
+	});
+	
+	UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlusheSettingsAsset.ToSoftObjectPath(), LoadDelegate);
 }
 
 void ABasePlushe::ApplySettings()
@@ -52,6 +77,11 @@ void ABasePlushe::ApplySettings()
 
 	Type = Settings->Type;
 	UE_LOG(LogTemp, Log, TEXT("Applied new Type = %i from settings"), Type);
+
+	PerceptionEnterRadius = Settings->PerceptionEnterRadius;
+	UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionEnterRadius = %f from settings"), PerceptionEnterRadius);
+	PerceptionLosingSight = Settings->PerceptionLosingSightRadius;
+	UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionLosingSight = %f from settings"), PerceptionLosingSight);
 }
 
 // Called every frame
