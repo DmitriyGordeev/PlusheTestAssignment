@@ -44,15 +44,6 @@ void ABasePlushe::LoadSettings()
 		{
 			UE_LOG(LogTemp, Log, TEXT("AssetClass = %s"), *AssetClass->GetName());
 			Settings = NewObject<UPlusheSettings>(this, AssetClass);
-			
-			Type = Settings->Type;
-			UE_LOG(LogTemp, Log, TEXT("Applied new Type = %i from settings"), Type);
-
-			PerceptionEnterRadius = Settings->PerceptionEnterRadius;
-			UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionEnterRadius = %f from settings"), PerceptionEnterRadius);
-			PerceptionLosingSight = Settings->PerceptionLosingSightRadius;
-			UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionLosingSight = %f from settings"), PerceptionLosingSight);
-
 			ApplySettings();
 			OnSettingsLoaded();
 		}
@@ -80,6 +71,7 @@ void ABasePlushe::ApplySettings()
 
 	PerceptionEnterRadius = Settings->PerceptionEnterRadius;
 	UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionEnterRadius = %f from settings"), PerceptionEnterRadius);
+
 	PerceptionLosingSight = Settings->PerceptionLosingSightRadius;
 	UE_LOG(LogTemp, Log, TEXT("Applied new PerceptionLosingSight = %f from settings"), PerceptionLosingSight);
 }
