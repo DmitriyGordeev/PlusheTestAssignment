@@ -2,6 +2,8 @@
 
 
 #include "BasePlushe.h"
+#include "Engine/AssetManager.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABasePlushe::ABasePlushe()
@@ -15,7 +17,41 @@ ABasePlushe::ABasePlushe()
 void ABasePlushe::BeginPlay()
 {
 	Super::BeginPlay();
+
+	LoadSettings();
 	
+}
+
+void ABasePlushe::LoadSettings()
+{
+	if (!PlusheSettingsAsset)
+		return;
+	
+	UClass* AssetClass = PlusheSettingsAsset.Get();
+	if (!AssetClass)
+	{
+		AssetClass = PlusheSettingsAsset.LoadSynchronous();
+	}
+	UE_LOG(LogTemp, Log, TEXT("AssetClass = %s"), *AssetClass->GetName());
+	Settings = NewObject<UPlusheSettings>(this, AssetClass);
+}
+
+void ABasePlushe::ApplySettings()
+{
+	if (!Settings)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Settings is null"));
+		return;
+	}
+
+	if (auto* CharMoveComp = GetCharacterMovement())
+	{
+		CharMoveComp->MaxWalkSpeed = Settings->MaxSpeed;
+		UE_LOG(LogTemp, Log, TEXT("Applied new MaxWalkSpeed = %f from settings"), Settings->MaxSpeed);
+	}
+
+	Type = Settings->Type;
+	UE_LOG(LogTemp, Log, TEXT("Applied new Type = %i from settings"), Type);
 }
 
 // Called every frame
@@ -31,4 +67,5 @@ void ABasePlushe::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
 
